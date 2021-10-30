@@ -1,0 +1,22 @@
+{
+  "name": "invoice-rf",
+  "version": "1.0.0",
+  "description": "Create invoice (RF), act (RF) in pdf-format from source table data ",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "invoice",
+    "act",
+    "account"
+  ],
+  "author": "Vadim Kozin",
+  "license": "ISC",
+  "dependencies": {
+    "csv-parser": "^3.0.0",
+    "fs-extra": "^10.0.0",
+    "jspdf": "^2.4.0",
+    "strip-bom-stream": "^4.0.0"
+  }
+}
