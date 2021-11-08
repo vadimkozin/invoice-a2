@@ -4,7 +4,8 @@
   "description": "Create invoice (RF), act (RF) in pdf-format from source table data ",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "xlsx": "xlsx"
   },
   "keywords": [
     "invoice",
@@ -14,9 +15,14 @@
   "author": "Vadim Kozin",
   "license": "ISC",
   "dependencies": {
+    "archiver": "^5.3.0",
     "csv-parser": "^3.0.0",
+    "dotenv": "^10.0.0",
     "fs-extra": "^10.0.0",
     "jspdf": "^2.4.0",
-    "strip-bom-stream": "^4.0.0"
+    "minimist": "^1.2.5",
+    "nodemailer": "^6.7.0",
+    "strip-bom-stream": "^4.0.0",
+    "xlsx": "^0.17.3"
   }
 }
