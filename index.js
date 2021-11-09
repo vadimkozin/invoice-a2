@@ -126,11 +126,11 @@ const main = async () => {
     try {
       fs.ensureDirSync(cfg.storage)
 
-      const ext = fn.getFileExtension(opts.file)
+      const ext = fn.getFileExtension(opts.file).toLocaleLowerCase()
 
       if (ext === 'csv') {
         run(cfg, await file.readFileCsv(cfg))
-      } else if (ext === 'xls') {
+      } else if (ext === 'xls' || ext === 'xlsx') {
         run(cfg, await xlsx.makeCsvFromXls(cfg))
       } else {
         log.add(`Неизвестное расширение файла: ${ext}`, true)
