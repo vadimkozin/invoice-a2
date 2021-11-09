@@ -36,6 +36,7 @@ const log = new Logging(pathLog, fileLog)
 
 const createDocuments = (result, cfg) => {
   const customersIds = Object.keys(result).sort()
+  let totalDocuments = 0
 
   customersIds.forEach((cid) => {
     const it = result[cid]
@@ -44,11 +45,15 @@ const createDocuments = (result, cfg) => {
       // prettier-ignore
       const nameFileAct = fn.getNameOutputFile(cfg.storage, cfg.period, it.customer, typeTraf, 'act')
       act.createAct(it, nameFileAct)
+      totalDocuments += 1
       // prettier-ignore
       const nameFileInvoice = fn.getNameOutputFile(cfg.storage, cfg.period, it.customer, typeTraf, 'invoice')
       invoice.createInvoice(it, nameFileInvoice)
+      totalDocuments += 1
     }
   })
+
+  return totalDocuments
 }
 
 const run = async (cfg, data) => {
@@ -57,8 +62,11 @@ const run = async (cfg, data) => {
     const [result, totalSum] = fn.prepareData(data)
 
     // создание документов
-    createDocuments(result, cfg)
-    log.add(`result: ${cfg.typeTraf.toUpperCase()}, total sum: ${totalSum.toFixed(2)}`, true)
+    const totalDocs = createDocuments(result, cfg)
+    log.add(
+      `result: ${cfg.typeTraf.toUpperCase()}, total docs: ${totalDocs}, total sum: ${totalSum.toFixed(2)}`,
+      true,
+    )
 
     // сжатие
     if (opts.compress) {
@@ -107,10 +115,6 @@ const main = async () => {
 
     const cfg = {
       filename: opts.file,
-      // period: fn.getPeriodFromNameFile(opts.file), // 2021_09
-      // typeTraf: fn.getTypeTrafficFromNameFile(opts.file), // mg | vz
-      // storage: `${pathResult}/${period}`, // ../result/2021_09/
-      // fileZip: `${pathZip}/${period}_wc.zip`, // ../result/2021_09/2021_09.zip
       period,
       typeTraf,
       storage,
