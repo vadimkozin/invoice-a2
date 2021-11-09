@@ -100,13 +100,21 @@ const main = async () => {
   } else {
     log.add(`file: ${path.basename(opts.file)}`)
     const period = fn.getPeriodFromNameFile(opts.file) // 2021_09
+    const typeTraf = fn.getTypeTrafficFromNameFile(opts.file) // mg | vz
+    const periodTraf = `${period}_${typeTraf.toUpperCase()}` // 2021_09_VZ
+    const storage = `${pathResult}/${periodTraf}` // ../result/2021_09_VZ/
+    const fileZip = `${pathZip}/${periodTraf}_wc.zip` // ../result/2021_09_VZ_wc.zip
 
     const cfg = {
       filename: opts.file,
-      period: fn.getPeriodFromNameFile(opts.file), // 2021_09
-      typeTraf: fn.getTypeTrafficFromNameFile(opts.file), // mg | vz
-      storage: `${pathResult}/${period}`, // ../result/2021_09/
-      fileZip: `${pathZip}/${period}_wc.zip`, // ../result/2021_09/2021_09.zip
+      // period: fn.getPeriodFromNameFile(opts.file), // 2021_09
+      // typeTraf: fn.getTypeTrafficFromNameFile(opts.file), // mg | vz
+      // storage: `${pathResult}/${period}`, // ../result/2021_09/
+      // fileZip: `${pathZip}/${period}_wc.zip`, // ../result/2021_09/2021_09.zip
+      period,
+      typeTraf,
+      storage,
+      fileZip,
       sheetNumber: 0, // номер листа в xls-файле с данными, если исходым является xls-файл
       fieldSeparator: ';', // разделитель полей в csv-файле
     }
