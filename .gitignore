@@ -8,3 +8,4 @@ yarn.lock
 result
 sources
 log/
+tmp/

@@ -5,25 +5,29 @@ const fn = require('./lib/func')
 const file = require('./lib/file')
 const act = require('./lib/act')
 const invoice = require('./lib/invoice')
+const account = require('./lib/account')
 const Logging = require('./lib/logging').Logging
 const arh = require('./lib/arhiver')
 const mail = require('./lib/mail')
 const xlsx = require('./lib/xlsx')
 const error = require('./lib/error')
 const opts = require('minimist')(process.argv.slice(2), {
-  alias: { help: 'h', file: 'f', compress: 'c', send: 's', email: 'e' },
+  alias: { help: 'h', file: 'f', compress: 'c', send: 's', email: 'e', act: 'a', invoice: 'i', account: 't' },
 })
 
 const nameProgramm = path.basename(process.argv[1])
 
 const help = `Creating pdf documents (invoice, act) and sending the result by e-mail.
 used: node ${nameProgramm} -f file.csv [-cs] [-e]
--f (--file)     name source file(csv) 
+-f (--file)     name source file(csv, xls, xlsx) 
 -c (--compress) compress result
 -s (--send)     sending compress result by e-mail
 -e (--email)    email recipient's address instead of the default address
+-a (--act)      create Act
+-i (--invoice)  create Invoice
+-t (--account)  create Account
 example:
-node ${nameProgramm} -f file.csv -cs --email=addr@mail.ru
+node ${nameProgramm} -f file.csv -ait -cs --email=addr@mail.ru
 `
 
 global.appRoot = path.resolve(__dirname)
@@ -40,16 +44,25 @@ const createDocuments = (result, cfg) => {
 
   customersIds.forEach((cid) => {
     const it = result[cid]
+    // prettier-ignore
     if (it.customer.type === 'u') {
       const typeTraf = fn.getTrafficSymbol(it.trafficType)
-      // prettier-ignore
-      const nameFileAct = fn.getNameOutputFile(cfg.storage, cfg.period, it.customer, typeTraf, 'act')
-      act.createAct(it, nameFileAct)
-      totalDocuments += 1
-      // prettier-ignore
-      const nameFileInvoice = fn.getNameOutputFile(cfg.storage, cfg.period, it.customer, typeTraf, 'invoice')
-      invoice.createInvoice(it, nameFileInvoice)
-      totalDocuments += 1
+
+      if (opts.act) {
+        const nameFileAct = fn.getNameOutputFile(cfg.storage, cfg.period, it.customer, typeTraf, 'act')
+        act.createAct(it, nameFileAct)
+        totalDocuments += 1
+      }
+      if (opts.invoice) {
+        const nameFileInvoice = fn.getNameOutputFile(cfg.storage, cfg.period, it.customer, typeTraf, 'invoice')
+        invoice.createInvoice(it, nameFileInvoice)
+        totalDocuments += 1
+      }
+      if (opts.account) {
+        const nameFileAccount = fn.getNameOutputFile(cfg.storage, cfg.period, it.customer, typeTraf, 'account')
+        account.createAccount(it.account, nameFileAccount)
+        totalDocuments += 1
+      }
     }
   })
 
@@ -63,10 +76,7 @@ const run = async (cfg, data) => {
 
     // создание документов
     const totalDocs = createDocuments(result, cfg)
-    log.add(
-      `result: ${cfg.typeTraf.toUpperCase()}, total docs: ${totalDocs}, total sum: ${totalSum.toFixed(2)}`,
-      true,
-    )
+    log.add(`result: ${cfg.typeTraf.toUpperCase()}, total docs: ${totalDocs}, total sum: ${totalSum.toFixed(2)}`, true)
 
     // сжатие
     if (opts.compress) {
@@ -81,9 +91,9 @@ const run = async (cfg, data) => {
         } catch (e) {
           log.add(`error: ${e}`, true)
         }
-        log.add('.', true)
       }
     }
+    log.add('.')
   } catch (err) {
     if (err.code === 'ENOENT') {
       return log.add(`error: ${err.message}`, true)
