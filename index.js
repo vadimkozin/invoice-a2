@@ -72,8 +72,11 @@ const createDocuments = (result, cfg) => {
 const run = async (cfg, data) => {
   try {
     // подготовка данных
-    const [result, totalSum] = fn.prepareData(data)
+    const [result, totalSum, errors] = fn.prepareData(data)
 
+    // если есть ошибки в данных
+    errors.forEach((error) => log.add(error, true))
+   
     // создание документов
     const totalDocs = createDocuments(result, cfg)
     log.add(`result: ${cfg.typeTraf.toUpperCase()}, total docs: ${totalDocs}, total sum: ${totalSum.toFixed(2)}`, true)
