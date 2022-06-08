@@ -28,8 +28,8 @@ used: node ${nameProgramm} -f file.csv [-cs] [-e]
 -t (--account)  create Account
 example:
 node ${nameProgramm} -f file.csv -ait -cs --email=addr@mail.ru
-node ${nameProgramm} -aics -f ./sources/westcall-longdistance-2022-01.xls
-node ${nameProgramm} -aics -f ./sources/westcall-intrazone-2022-01.xls
+node ${nameProgramm} -aics -f ./sources/2022/westcall-longdistance-2022-01.xls
+node ${nameProgramm} -aics -f ./sources/2022/westcall-intrazone-2022-01.xls
 `
 
 global.appRoot = path.resolve(__dirname)
